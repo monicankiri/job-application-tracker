@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📊 Job Tracker</h1>
+
+<!-- FILTER -->
+<div class="filters">
+    <a href="/">All</a>
+    <a href="/?filter=pending">Pending</a>
+    <a href="/?filter=applied">Applied</a>
+    <a href="/?filter=interview">Interview</a>
+    <a href="/?filter=rejected">Rejected</a>
+</div>
+
+<hr>
+
+<!-- ADD JOB -->
+<form action="/add" method="POST" class="form">
+    <input type="text" name="company" placeholder="Company" required>
+    <input type="text" name="role" placeholder="Role" required>
+    
+
+    <select name="status">
+        <option value="pending">Pending</option>
+        <option value="applied">Applied</option>
+        <option value="interview">Interview</option>
+        <option value="rejected">Rejected</option>
+    </select>
+
+    <button type="submit">Add Job</button>
+</form>
+<form method="GET" action="/">
+    <input type="text" name="search" placeholder="Search company or role" value="{{ request.args.get('search') }}">
+    <button type="submit">Search</button>
+</form>
+<hr>
+
+<h2>Jobs</h2>
+
+{% for job in jobs %}
+<div class="card">
+    <h3>{{ job.company }}</h3>
+    <p>{{ job.role }}</p>
+    <p class="status">Status: {{ job.status }}</p>
+
+    <form action="/update/{{ job.id }}" method="POST">
+        <select name="status">
+            <option value="pending">Pending</option>
+            <option value="applied">Applied</option>
+            <option value="interview">Interview</option>
+            <option value="rejected">Rejected</option>
+        </select>
+
+        <button type="submit">Update</button>
+        
+    </form>
+<form action="/delete/{{ job.id }}" method="POST" onsubmit="return confirm('Are you sure?')">
+    <button type="submit" style="background:red;">Delete</button>
+</form>   
+</div>
+{% endfor %}
+
+</div>
+
+</body>
+</html>
